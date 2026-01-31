@@ -1,4 +1,5 @@
-from typing_extensions import Literal, NotRequired
+import builtins
+from typing_extensions import Literal, NotRequired, AsyncIterable
 from dataclasses import dataclass
 from decimal import Decimal
 
@@ -70,3 +71,31 @@ class FlexibleList(AuthEndpoint):
       params['recvWindow'] = recv_window
     r = await self.authed_request('GET', '/sapi/v1/simple-earn/flexible/list', params=params)
     return self.output(r.text, validate_response, validate=validate)
+
+
+  async def list_paged(
+    self,
+    *,
+    asset: str | None = None,
+    size: int = 100,
+    recv_window: int | None = None,
+    validate: bool | None = None
+  ) -> AsyncIterable[builtins.list[FlexibleProductRow]]:
+    """Get available Simple Earn flexible product list.
+
+    - `asset`: Filter by asset
+    - `size`: Page size. Default: 100, Max: 100
+    - `recv_window`: Request receive window (milliseconds)
+    - `validate`: Whether to validate the response against the expected schema (default: True).
+
+    > [Binance API docs](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Flexible-Product-List)
+    """
+    current = 1
+    while True:
+      r = await self.list(asset=asset, current=current, size=size, recv_window=recv_window, validate=validate)
+      if not r['rows']:
+        break
+      yield r['rows']
+      if r['total'] <= current*size:
+        break
+      current += 1

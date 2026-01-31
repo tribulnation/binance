@@ -2,7 +2,7 @@ from typing_extensions import NotRequired
 from dataclasses import dataclass
 from decimal import Decimal
 
-from ...core import AuthEndpoint, validator, TypedDict
+from binance.core import AuthEndpoint, validator, TypedDict
 
 class CapitalConfigNetwork(TypedDict):
   network: str
