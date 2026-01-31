@@ -1,2 +1,7 @@
-import lazy_loader as lazy
-__getattr__, __dir__, __all__ = lazy.attach_stub(__name__, __file__)
+from binance.core import AuthRouter
+from .flexible import Flexible
+from .fixed import Fixed
+
+class SimpleEarn(AuthRouter):
+  flexible: Flexible
+  fixed: Fixed

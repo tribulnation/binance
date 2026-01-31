@@ -8,11 +8,12 @@ help:
 # Build the package (into `dist/`)
 build:
   cd {{PKG}} && \
-  cp ../README.md . && \
   rm -drf dist && \
+  pyright . && \
+  cp ../README.md . && \
   {{PYTHON}} -m build && \
-  rm -drf build && \
-  rm README.md
+  rm README.md && \
+  rm -drf build
 
 # Publish `dist/*` to pypi, then delete
 publish: build
